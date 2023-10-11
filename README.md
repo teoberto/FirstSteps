@@ -1,2 +1,2 @@
 # FirstSteps
-Compartilhando meus primeiros projetos públicos
+Primeiros projetos da plataforma.
