@@ -7,7 +7,4 @@ https://github.com/teoberto/FirstSteps/blob/7cd3c4d1a8e3ea24a9ac8c1e54c91652157e
 
 ## Extração de informações da DIRPF para avaliação patrimonial
 
-https://github.com/teoberto/FirstSteps/blob/67cf0712c5e7fc98643a057f4889d770b567b4ba/AvaliaPatrimonioDIRPF.R
-
-
-
+https://github.com/teoberto/FirstSteps/blob/102e9b40754f4238c81b3193be5fec95b0487e69/AvaliaPatrimonioDIRPF.R
