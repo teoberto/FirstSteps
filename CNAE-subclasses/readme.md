@@ -4,6 +4,6 @@ Script Python que lê dados da planilha que contem a estrutura detalhado da CNAE
 
 Contém:
 
-_Notebook Python;
+* Notebook Python;
 
-_Arquivo csv gerado;
+* Arquivo csv gerado;
