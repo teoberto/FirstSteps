@@ -9,8 +9,8 @@ library(stringr)
 library(dplyr)
 
 #### Parametros iniciais
-diretorio_origem <- "diretorio/arquivos"
-diretorio_destino <- "diretorio/resultado"
+diretorio_origem <- "diretorio/arquivos_da_dirpf"
+diretorio_destino <- "diretorio/resultado_final"
 
 #### Relacao de arquivos ####
 # configura diretorio
@@ -62,7 +62,7 @@ for (i in 1:length(arquivos)) {
     
     ### Informacoes gerais extraidas do Resumo final
     # Defina as duas strings delimitadoras, de inicio e fim
-    inicio <- "TRIBUTAÇÃO UTILIZANDO AS DEDUÇÕES LEGAIS"
+    inicio <- "TRIBUTAÇÃO UTILIZANDO"
     fim <- "OUTRAS INFORMAÇÕES   "
     
     # pagina inicial do resumo
@@ -93,8 +93,30 @@ for (i in 1:length(arquivos)) {
     df <- data.frame(descricao = descricao, valor = valor, stringsAsFactors = FALSE)
     # Limpa descricao
     df$descricao <- str_squish(df$descricao)
+    
+    # Avalia necessidade de substituir ponto por virgua e vice e versa
+    # busca o rendimento recebido para a analise
+    padrao_brasil <- max(unlist(str_locate_all(df[str_detect(df$descricao, "TOTAL"),][1,2],"\\.")))
+    padrao_internacional <- max(unlist(str_locate_all(df[str_detect(df$descricao, "TOTAL"),][1,2],",")))
+    
+    if( padrao_brasil <  padrao_internacional){
+          
     # Substitui virgula por ponto para padrao brasileiro
+    df$valor <- gsub("\\.", "", df$valor)
+    df$valor <- gsub(",", ".", df$valor)
+    
+    }
+    
+    if( padrao_brasil >  padrao_internacional){
+          
+    # Substitui virgula por vazio
     df$valor <- gsub(",", "", df$valor)
+    
+    }
+    
+
+    
+    # converte para tipo numerico
     df$valor <- as.numeric(df$valor)
     # remove nulos
     df <- df %>% filter(!is.na(valor))
@@ -103,7 +125,14 @@ for (i in 1:length(arquivos)) {
     rendimento <- df[str_detect(df$descricao, "TOTAL"),][1,2]
     
     ### Deducoes
+    tp_declaracao <- "deducoes_legais"
+    
     deducoes <- df[str_detect(df$descricao, "TOTAL"),][2,2]
+    if (is.na(deducoes)) {
+      deducoes <- 0
+      tp_declaracao <- "desconto_simplificado"
+    }
+    
     
     ### Imposto pago
     imposto <- df[str_detect(df$descricao, "Total do imposto pago"),][1,2]
@@ -120,6 +149,7 @@ for (i in 1:length(arquivos)) {
     
     declaracao <- data.frame(
       cpf = cpf,
+      tp_declaracao = tp_declaracao,
       cpf_conjuge = cpf_conjuge,
       qtd_dependentes = qtd_dependentes,
       exercicio = exercicio,
